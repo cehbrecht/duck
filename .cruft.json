@@ -1,0 +1,27 @@
+{
+  "template": "https://github.com/bird-house/cookiecutter-birdhouse.git",
+  "commit": "a5d7e28ce0d66afc3ae73c483d5457e4ac808743",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "full_name": "Carsten Ehbrecht",
+      "email": "ehbrecht@dkrz.de",
+      "github_username": "cehbrecht",
+      "project_name": "Duck",
+      "project_slug": "duck",
+      "project_repo_name": "duck",
+      "project_readthedocs_name": "duck",
+      "project_short_description": "A Demo Web Service for Clint AI.",
+      "version": "0.1.0",
+      "open_source_license": "Apache Software License 2.0",
+      "http_port": "5000",
+      "use_pytest": "y",
+      "create_author_file": "y",
+      "_copy_without_render": [
+        "{{cookiecutter.project_slug}}/templates/*.cfg"
+      ],
+      "_template": "https://github.com/bird-house/cookiecutter-birdhouse.git"
+    }
+  },
+  "directory": null
+}
