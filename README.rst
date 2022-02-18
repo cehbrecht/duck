@@ -60,4 +60,4 @@ This package was created with Cookiecutter_ and the `bird-house/cookiecutter-bir
 .. _`Developer Guide`: https://duck.readthedocs.io/en/latest/dev_guide.html
 .. _bumpversion: https://duck.readthedocs.io/en/latest/dev_guide.html#bump-a-new-version
 .. _`Smart Birds`: https://wildletter.com/2022/01/23/smartest-birds/
-.. _`Clint AI`: https://github.com/FREVA-CLINT/climatereconstructionAI/tree/clint
+.. _`Clint AI`: https://github.com/FREVA-CLINT/climatereconstructionAI/tree/clint/demo
