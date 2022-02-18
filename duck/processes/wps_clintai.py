@@ -1,41 +1,56 @@
-import os
+from pathlib import Path
 
 from pywps import Process
-# from pywps import LiteralInput
+from pywps import LiteralInput
 from pywps import ComplexInput, ComplexOutput
-from pywps import FORMATS
+from pywps import Format, FORMATS
 from pywps.app.Common import Metadata
-from pywps.app.exceptions import ProcessError
+# from pywps.app.exceptions import ProcessError
+
+from duck import clintai
 
 import logging
 LOGGER = logging.getLogger("PYWPS")
+
+FORMAT_PNG = Format("image/png", extension=".png", encoding="base64")
 
 
 class ClintAI(Process):
     def __init__(self):
         inputs = [
             ComplexInput('dataset', 'Upload your NetCDF file here',
-                         abstract='or enter a URL pointing to a NetCDF file.',
-                         min_occurs=0,
+                         abstract='Enter a URL pointing to a NetCDF file.',
+                         min_occurs=1,
                          max_occurs=1,
                          supported_formats=[FORMATS.NETCDF]),
-            ComplexInput('dataset_opendap', 'Remote OpenDAP Data URL',
-                         abstract="Or provide a remote OpenDAP data URL,"
-                                  " for example:"
-                                  " http://www.esrl.noaa.gov/psd/thredds/dodsC/Datasets/ncep.reanalysis2.dailyavgs/surface/mslp.2016.nc",  # noqa
-                         min_occurs=0,
+            LiteralInput('data_type', "Data Type",
+                         abstract="Choose data type.",
+                         min_occurs=1,
                          max_occurs=1,
-                         supported_formats=[FORMATS.DODS]),
+                         default='tas',
+                         allowed_values=['tas']),
         ]
         outputs = [
             ComplexOutput('output', 'NetCDF Output',
                           abstract='NetCDF Output produced by ClintAI.',
                           as_reference=True,
                           supported_formats=[FORMATS.NETCDF]),
-            ComplexOutput('log', 'logfile',
-                          abstract='logfile of ClintAI execution.',
+            ComplexOutput('mask', 'NetCDF Mask',
+                          abstract='NetCDF Mask produced by ClintAI.',
                           as_reference=True,
-                          supported_formats=[FORMATS.TEXT]),
+                          supported_formats=[FORMATS.NETCDF]),
+            # ComplexOutput('plot_gt', 'plot gt',
+            #               abstract='plot gt.',
+            #               as_reference=True,
+            #               supported_formats=[FORMAT_PNG]),
+            # ComplexOutput('plot_output_comp', 'plot output comp',
+            #               abstract='plot output comp.',
+            #               as_reference=True,
+            #               supported_formats=[FORMAT_PNG]),
+            # ComplexOutput('log', 'logfile',
+            #               abstract='logfile of ClintAI execution.',
+            #               as_reference=True,
+            #               supported_formats=[FORMATS.TEXT]),
         ]
 
         super(ClintAI, self).__init__(
@@ -55,17 +70,18 @@ class ClintAI(Process):
         )
 
     def _handler(self, request, response):
-        if 'dataset_opendap' in request.inputs:
-            dataset = request.inputs['dataset_opendap'][0].url
-        elif 'dataset' in request.inputs:
-            dataset = request.inputs['dataset'][0].file
-        else:
-            raise ProcessError("You need to provide a Dataset.")
+        dataset = request.inputs['dataset'][0].file
+        data_type = request.inputs['data_type'][0].data
 
         response.update_status('starting ...', 0)
 
-        with open(os.path.join(self.workdir, "nc_dump.txt"), 'w') as fp:
-            response.outputs['log'].file = fp.name
+        clintai.run(dataset, data_type, outdir=self.workdir)
+
+        response.outputs["output"].file = Path(self.workdir + "/outputs/demo_output.nc")
+        response.outputs["mask"].file = Path(self.workdir + "/outputs/demo_mask.nc")
+        # response.outputs["log"].file = Path(self.workdir + "/logs/demo.log")
+        # response.outputs["plot_gt"].file = Path(self.workdir + "/images/demo_gt.png")
+        # response.outputs["plot_output_comp"].file = Path(self.workdir + "/images/demo_output_comp.png")
 
         response.update_status('done.', 100)
         return response

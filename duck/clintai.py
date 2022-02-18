@@ -1,0 +1,53 @@
+from jinja2 import Template
+from pathlib import Path
+import shutil
+# import subprocess
+# from subprocess import check_output, CalledProcessError
+
+from climatereconstructionai import evaluate
+
+import logging
+LOGGER = logging.getLogger("PYWPS")
+
+
+def write_clintai_cfg(base_dir, name, data_type):
+    cfg_templ = """
+    --data-root-dir {{ base_dir }}
+    --mask-dir {{ base_dir }}/outputs
+    --model-dir /Users/pingu/Documents/GitHub/freva-clint/climatereconstructionAI/data
+    --model-names 20cr_20220114.pth
+    --evaluation-dirs {{ base_dir }}/outputs
+    --img-names {{ name }}
+    --data-types {{ data_type }}
+    --device cpu --image-sizes 72
+    --out-channels 1
+    --lstm-steps 0
+    --prev-next-steps 0
+    --infill infill
+    --eval-names demo
+    --dataset-name hadcrut4
+    """
+    cfg = Template(cfg_templ).render(
+        base_dir=base_dir,
+        name=name,
+        data_type=data_type)
+    out = Path(base_dir + "/clintai.cfg")
+    with open(out, "w") as fp:
+        fp.write(cfg)
+    return out
+
+
+def run(dataset, data_type, outdir):
+    name = Path(dataset).name
+    Path(outdir + "/masks").mkdir()
+    Path(outdir + "/outputs/").mkdir()
+    Path(outdir + "/images").mkdir()
+    input_dir = Path(outdir + "/test_large")
+    input_dir.mkdir()
+    shutil.move(dataset, input_dir)
+    cfg_file = write_clintai_cfg(base_dir=outdir, name=name, data_type=data_type)
+    print(f"written cfg {cfg_file}")
+    evaluate(cfg_file.as_posix())
+    # subprocess.run(
+    #     ['crai-evaluate', '--load-from-file',  cfg_file.as_posix()],
+    #     check=True)
