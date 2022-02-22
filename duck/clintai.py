@@ -1,3 +1,4 @@
+import os
 from jinja2 import Template
 from pathlib import Path
 import shutil
@@ -9,12 +10,15 @@ from climatereconstructionai import evaluate
 import logging
 LOGGER = logging.getLogger("PYWPS")
 
+DUCK_HOME = os.path.abspath(os.path.dirname(__file__))
+DATA_DIR = os.path.join(DUCK_HOME, "data")
+
 
 def write_clintai_cfg(base_dir, name, data_type):
     cfg_templ = """
     --data-root-dir {{ base_dir }}
     --mask-dir {{ base_dir }}/outputs
-    --model-dir /Users/pingu/Documents/GitHub/freva-clint/climatereconstructionAI/data
+    --model-dir {{ data_dir }}
     --model-names 20cr_20220114.pth
     --evaluation-dirs {{ base_dir }}/outputs
     --img-names {{ name }}
@@ -29,6 +33,7 @@ def write_clintai_cfg(base_dir, name, data_type):
     """
     cfg = Template(cfg_templ).render(
         base_dir=base_dir,
+        data_dir=DATA_DIR,
         name=name,
         data_type=data_type)
     out = Path(base_dir + "/clintai.cfg")
