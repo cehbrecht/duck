@@ -33,7 +33,6 @@ jobs:
     - name: Lint with flake8 ⚙️
       run: make lint
       if: matrix.python-version == 3.7
-    - name: Build docs 🏗️
-      run: make docs
-      if: matrix.python-version == 3.7
-
+    # - name: Build docs 🏗️
+    #   run: make docs
+    #   if: matrix.python-version == 3.7
