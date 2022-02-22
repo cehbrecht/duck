@@ -22,9 +22,9 @@ Duck
     :alt: Join the chat at https://gitter.im/bird-house/birdhouse
 
 Duck (the bird)
-  *Ducks are very social animals, as is evident by their loud quacking at all hours of the day.* (_`Smart Birds`)
+  *Ducks are very social animals, as is evident by their loud quacking at all hours of the day.* (`Smart Birds`_)
 
-A Demo Web Service for Clint AI.
+A Demo Web Service for `Clint AI`_.
 
 Documentation
 -------------
@@ -60,3 +60,4 @@ This package was created with Cookiecutter_ and the `bird-house/cookiecutter-bir
 .. _`Developer Guide`: https://duck.readthedocs.io/en/latest/dev_guide.html
 .. _bumpversion: https://duck.readthedocs.io/en/latest/dev_guide.html#bump-a-new-version
 .. _`Smart Birds`: https://wildletter.com/2022/01/23/smartest-birds/
+.. _`Clint AI`: https://github.com/FREVA-CLINT/climatereconstructionAI/tree/clint/demo

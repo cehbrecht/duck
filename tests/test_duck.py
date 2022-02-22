@@ -4,11 +4,6 @@
 
 import pytest
 
-from click.testing import CliRunner
-
-import duck
-from duck import cli
-
 
 @pytest.fixture
 def response():
